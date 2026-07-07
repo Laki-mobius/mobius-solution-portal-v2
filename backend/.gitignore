@@ -1,0 +1,9 @@
+node_modules
+# Keep environment variables out of version control
+.env
+/generated/prisma
+# Local database and uploaded files - not for version control
+*.db
+*.db-journal
+uploads/*
+!uploads/.gitkeep

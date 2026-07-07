@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// solutionType: "internal" | "external"
+// status: "live" | "upcoming" | "archived"
+// collateral type: "video" | "deck" | "document"
+// user role: "user" | "admin"
+// Values are validated in application code (zod), since SQLite has no native enums.
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  role         String   @default("user")
+  createdAt    DateTime @default(now())
+}
+
+model Solution {
+  id                        String    @id @default(uuid())
+  sortOrder                 Int       @default(0)
+  title                     String
+  description               String    @default("")
+  iconUrl                   String?
+  thumbnailUrl              String?
+  targetUrl                 String
+  solutionType              String
+  practice                  String?
+  status                    String    @default("live")
+  upcomingEta               DateTime?
+  defaultUsername           String?
+  defaultPasswordEncrypted  String?
+  credentialsNote           String?
+  createdAt                 DateTime  @default(now())
+  updatedAt                 DateTime  @updatedAt
+
+  collaterals       Collateral[]
+  credentialReveals CredentialReveal[]
+}
+
+model Collateral {
+  id                String    @id @default(uuid())
+  sortOrder         Int       @default(0)
+  title             String
+  type              String
+  fileUrl           String
+  linkedSolutionId  String?
+  linkedSolution    Solution? @relation(fields: [linkedSolutionId], references: [id], onDelete: SetNull)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+}
+
+model ActivityLog {
+  id         String   @id @default(uuid())
+  email      String
+  action     String
+  targetId   String?
+  targetType String?
+  createdAt  DateTime @default(now())
+}
+
+model CredentialReveal {
+  id         String   @id @default(uuid())
+  solutionId String
+  solution   Solution @relation(fields: [solutionId], references: [id], onDelete: Cascade)
+  email      String
+  createdAt  DateTime @default(now())
+}
