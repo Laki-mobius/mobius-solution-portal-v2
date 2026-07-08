@@ -14,9 +14,18 @@ const Solutions = () => {
   const [practiceFilter, setPracticeFilter] = useState<string>("all");
   const [q, setQ] = useState("");
 
+  const typeCounts = useMemo(() => {
+    const c: Record<string, number> = { all: solutions.length, internal: 0, external: 0 };
+    for (const s of solutions) c[s.solution_type] = (c[s.solution_type] ?? 0) + 1;
+    return c;
+  }, [solutions]);
+
   const practices = useMemo(() => {
-    const set = new Set(solutions.map((s) => s.practice).filter(Boolean) as string[]);
-    return Array.from(set);
+    const counts = new Map<string, number>();
+    for (const s of solutions) {
+      if (s.practice) counts.set(s.practice, (counts.get(s.practice) ?? 0) + 1);
+    }
+    return Array.from(counts.entries());
   }, [solutions]);
 
   const filtered = useMemo(() => {
@@ -66,7 +75,7 @@ const Solutions = () => {
                       typeFilter === t ? "bg-foreground text-background" : "text-muted-foreground"
                     }`}
                   >
-                    {t}
+                    {t} <span className="opacity-60">({typeCounts[t] ?? 0})</span>
                   </button>
                 ))}
               </>
@@ -83,7 +92,7 @@ const Solutions = () => {
                 {practices.length === 0 ? (
                   <span className="px-2 py-1 text-xs text-muted-foreground">No practices tagged yet</span>
                 ) : (
-                  practices.map((p) => (
+                  practices.map(([p, count]) => (
                     <button
                       key={p}
                       onClick={() => setPracticeFilter(p)}
@@ -91,7 +100,7 @@ const Solutions = () => {
                         practiceFilter === p ? "bg-foreground text-background" : "text-muted-foreground"
                       }`}
                     >
-                      {p}
+                      {p} <span className="opacity-60">({count})</span>
                     </button>
                   ))
                 )}

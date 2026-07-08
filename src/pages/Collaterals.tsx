@@ -36,23 +36,26 @@ const Collaterals = () => {
   }, [collaterals]);
 
   const practices = useMemo(() => {
-    const set = new Set<string>();
+    const counts = new Map<string, number>();
     for (const c of collaterals) {
       const sol = c.linked_solution_id ? solutionById.get(c.linked_solution_id) : null;
-      if (sol?.practice) set.add(sol.practice);
+      if (sol?.practice) counts.set(sol.practice, (counts.get(sol.practice) ?? 0) + 1);
     }
-    return Array.from(set);
+    return Array.from(counts.entries()); // [practiceName, count][]
   }, [collaterals, solutionById]);
 
   const linkedSolutions = useMemo(() => {
-    const set = new Map<string, string>();
+    const map = new Map<string, { title: string; count: number }>();
     for (const c of collaterals) {
       if (c.linked_solution_id) {
         const sol = solutionById.get(c.linked_solution_id);
-        if (sol) set.set(sol.id, sol.title);
+        if (sol) {
+          const existing = map.get(sol.id);
+          map.set(sol.id, { title: sol.title, count: (existing?.count ?? 0) + 1 });
+        }
       }
     }
-    return Array.from(set.entries());
+    return Array.from(map.entries()); // [id, { title, count }][]
   }, [collaterals, solutionById]);
 
   const filtered = useMemo(() => {
@@ -135,7 +138,7 @@ const Collaterals = () => {
                 {practices.length === 0 ? (
                   <span className="px-2 py-1 text-xs text-muted-foreground">No practices tagged yet</span>
                 ) : (
-                  practices.map((p) => (
+                  practices.map(([p, count]) => (
                     <button
                       key={p}
                       onClick={() => setPracticeFilter(p)}
@@ -143,7 +146,7 @@ const Collaterals = () => {
                         practiceFilter === p ? "bg-foreground text-background" : "text-muted-foreground"
                       }`}
                     >
-                      {p}
+                      {p} <span className="opacity-60">({count})</span>
                     </button>
                   ))
                 )}
@@ -163,7 +166,7 @@ const Collaterals = () => {
                 {linkedSolutions.length === 0 ? (
                   <span className="px-2 py-1 text-xs text-muted-foreground">No linked solutions yet</span>
                 ) : (
-                  linkedSolutions.map(([id, title]) => (
+                  linkedSolutions.map(([id, { title, count }]) => (
                     <button
                       key={id}
                       onClick={() => setSolutionFilter(id)}
@@ -171,7 +174,7 @@ const Collaterals = () => {
                         solutionFilter === id ? "bg-foreground text-background" : "text-muted-foreground"
                       }`}
                     >
-                      {title}
+                      {title} <span className="opacity-60">({count})</span>
                     </button>
                   ))
                 )}
