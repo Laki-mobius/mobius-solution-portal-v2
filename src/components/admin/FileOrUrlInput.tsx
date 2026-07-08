@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader2, Upload } from "lucide-react";
 import { uploadPortalFile } from "@/lib/storage";
+import { resolveFileUrl } from "@/lib/resolveUrl";
 import { toast } from "sonner";
 
 interface Props {
@@ -53,7 +54,7 @@ export const FileOrUrlInput = ({ value, onChange, accept, prefix, placeholder }:
         </label>
         {value && (
           <a
-            href={value}
+            href={resolveFileUrl(value)}
             target="_blank"
             rel="noreferrer"
             className="text-xs text-muted-foreground underline"

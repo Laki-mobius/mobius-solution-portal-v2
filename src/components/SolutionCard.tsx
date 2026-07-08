@@ -1,4 +1,5 @@
 import { Solution } from "@/hooks/useContent";
+import { resolveFileUrl } from "@/lib/resolveUrl";
 import { ArrowUpRight, Sparkles, KeyRound, Copy, Check, Loader2 } from "lucide-react";
 
 import { logActivity } from "@/lib/tracking";
@@ -77,7 +78,7 @@ export const SolutionCard = ({ solution }: { solution: Solution }) => {
       >
         {solution.thumbnail_url ? (
           <img
-            src={solution.thumbnail_url}
+            src={resolveFileUrl(solution.thumbnail_url)}
             alt={solution.title}
             className={`h-full w-full object-cover transition-transform duration-500 ${
               isUpcoming ? "grayscale" : "group-hover:scale-105"
@@ -123,7 +124,7 @@ export const SolutionCard = ({ solution }: { solution: Solution }) => {
         <div className="flex items-start gap-3">
           {solution.icon_url && (
             <img
-              src={solution.icon_url}
+              src={resolveFileUrl(solution.icon_url)}
               alt=""
               className="h-9 w-9 rounded-lg border border-border object-cover"
               loading="lazy"

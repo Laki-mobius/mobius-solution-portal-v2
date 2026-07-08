@@ -4,6 +4,7 @@ import { ArrowRight, Sparkles, Search, FileText, Layers, Play, ShieldCheck, Glob
 import { Link, useNavigate } from "react-router-dom";
 import { useMemo, useState } from "react";
 import { logActivity } from "@/lib/tracking";
+import { resolveFileUrl } from "@/lib/resolveUrl";
 import { NetworkBackground } from "@/components/NetworkBackground";
 import { getFileIconMeta } from "@/lib/fileIcon";
 
@@ -47,7 +48,7 @@ const Index = () => {
 
   const openCollateral = async (fileUrl: string, id: string) => {
     await logActivity("view_collateral", id, "collateral");
-    window.open(fileUrl, "_blank", "noopener,noreferrer");
+    window.open(resolveFileUrl(fileUrl), "_blank", "noopener,noreferrer");
   };
 
   return (
@@ -136,7 +137,7 @@ const Index = () => {
                   >
                     {s.thumbnail_url ? (
                       <img
-                        src={s.thumbnail_url}
+                        src={resolveFileUrl(s.thumbnail_url)}
                         alt={s.title}
                         className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                       />
@@ -212,7 +213,7 @@ const Index = () => {
                 const handleClick = async () => {
                   if (item.kind === "collateral") {
                     await logActivity("view_collateral", item.id, "collateral");
-                    window.open(item.file_url, "_blank", "noopener,noreferrer");
+                    window.open(resolveFileUrl(item.file_url), "_blank", "noopener,noreferrer");
                   } else {
                     const sol = solutions.find((s) => s.id === item.id);
                     if (sol) {

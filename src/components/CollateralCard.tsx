@@ -1,4 +1,5 @@
 import { Collateral, Solution } from "@/hooks/useContent";
+import { resolveFileUrl } from "@/lib/resolveUrl";
 import { logActivity } from "@/lib/tracking";
 import { Download, ExternalLink, Link2, Play } from "lucide-react";
 import { getFileIconMeta } from "@/lib/fileIcon";
@@ -23,15 +24,16 @@ export const CollateralCard = ({
             ? "download_collateral"
             : "view_collateral";
       await logActivity(action, collateral.id, "collateral");
+      const resolvedUrl = resolveFileUrl(collateral.file_url);
       if (download) {
         const a = document.createElement("a");
-        a.href = collateral.file_url;
+        a.href = resolvedUrl;
         a.download = collateral.title;
         a.target = "_blank";
         a.rel = "noopener";
         a.click();
       } else {
-        window.open(collateral.file_url, "_blank", "noopener,noreferrer");
+        window.open(resolvedUrl, "_blank", "noopener,noreferrer");
       }
     } catch {
       /* cancelled */

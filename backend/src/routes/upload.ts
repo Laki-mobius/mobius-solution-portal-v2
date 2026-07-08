@@ -26,7 +26,7 @@ const upload = multer({
 router.post("/", requireAuth, requireAdmin, upload.single("file"), (req, res) => {
   if (!req.file) return res.status(400).json({ error: "No file provided" });
 
-  const fileUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
+  const fileUrl = `/uploads/${req.file.filename}`;
   res.json({ url: fileUrl, filename: req.file.filename });
 });
 
