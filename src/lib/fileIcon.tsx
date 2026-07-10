@@ -15,11 +15,14 @@ function getExtension(url: string): string {
 
 export function getFileIconMeta(
   fileUrl: string,
-  type: "video" | "deck" | "document",
+  type: "video" | "deck" | "document" | "landing_page",
 ): FileIconMeta {
   const ext = getExtension(fileUrl);
   const isYouTube = /youtube\.com|youtu\.be/.test(fileUrl);
 
+  if (type === "landing_page") {
+    return { src: "/icons/www.png", alt: "Landing Page" };
+  }
   if (isYouTube || type === "video") {
     return { src: "/icons/youtube.png", alt: "YouTube" };
   }

@@ -26,7 +26,7 @@ import { FileOrUrlInput } from "./FileOrUrlInput";
 type Form = {
   id?: string;
   title: string;
-  type: "video" | "deck" | "document";
+  type: "video" | "deck" | "document" | "landing_page";
   file_url: string;
   linked_solution_id: string | null;
 };
@@ -107,6 +107,7 @@ export const AdminCollaterals = () => {
     video: "video/*",
     deck: ".pdf,.ppt,.pptx,application/pdf,application/vnd.ms-powerpoint",
     document: ".pdf,.doc,.docx,application/pdf",
+    landing_page: "",
   };
 
   return (
@@ -210,6 +211,7 @@ export const AdminCollaterals = () => {
                   <SelectItem value="video">Video</SelectItem>
                   <SelectItem value="deck">Deck</SelectItem>
                   <SelectItem value="document">Document</SelectItem>
+                  <SelectItem value="landing_page">Landing Page</SelectItem>
                 </SelectContent>
               </Select>
             </div>

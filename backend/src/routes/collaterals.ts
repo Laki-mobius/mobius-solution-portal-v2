@@ -25,7 +25,7 @@ router.get("/", async (_req, res) => {
 
 const CollateralSchema = z.object({
   title: z.string().min(1).max(200),
-  type: z.enum(["video", "deck", "document"]),
+  type: z.enum(["video", "deck", "document", "landing_page"]),
   file_url: z.string().min(1),
   linked_solution_id: z.string().nullable().optional(),
 });
