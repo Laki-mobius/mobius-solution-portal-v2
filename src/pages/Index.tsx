@@ -125,7 +125,7 @@ const Index = () => {
         ) : (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {featured.map((s, i) => {
-              const relevant = collaterals.filter((c) => c.linked_solution_id === s.id).slice(0, 3);
+              const relevant = collaterals.filter((c) => c.linked_solution_id === s.id);
               return (
                 <div
                   key={s.id}
