@@ -16,7 +16,7 @@ const Index = () => {
   const navigate = useNavigate();
   const [q, setQ] = useState("");
 
-  const featured = useMemo(() => solutions.slice(0, 4), [solutions]);
+  const featured = useMemo(() => solutions.slice(0, 8), [solutions]);
   const latestItems = useMemo(() => {
     const items = [
       ...solutions.map((s) => ({
