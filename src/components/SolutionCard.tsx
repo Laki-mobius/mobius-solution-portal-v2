@@ -1,4 +1,5 @@
-import { Solution } from "@/hooks/useContent";
+import { Solution, useCollaterals } from "@/hooks/useContent";
+import { getFileIconMeta } from "@/lib/fileIcon";
 import { resolveFileUrl } from "@/lib/resolveUrl";
 import { ArrowUpRight, Sparkles, KeyRound, Copy, Check, Loader2 } from "lucide-react";
 
@@ -15,6 +16,9 @@ export const SolutionCard = ({ solution }: { solution: Solution }) => {
   const [loadingCreds, setLoadingCreds] = useState(false);
   const [copied, setCopied] = useState<string | null>(null);
   const hideTimer = useRef<number | null>(null);
+
+  const { data: collaterals = [] } = useCollaterals();
+  const relevant = collaterals.filter((c) => c.linked_solution_id === solution.id);
 
   const isInternal = solution.solution_type === "internal";
   const isUpcoming = solution.status === "upcoming";
@@ -191,6 +195,38 @@ export const SolutionCard = ({ solution }: { solution: Solution }) => {
                 </p>
               </div>
             )}
+          </div>
+        )}
+
+        {relevant.length > 0 && (
+          <div className={`${hasCreds ? "" : "mt-auto"} border-t border-border pt-3`}>
+            <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              Relevant collaterals
+            </p>
+            <div className="flex flex-wrap gap-3">
+              {relevant.map((c) => (
+                <button
+                  key={c.id}
+                  type="button"
+                  onClick={async (e) => {
+                    e.stopPropagation();
+                    try {
+                      await logActivity("view_collateral", c.id, "collateral");
+                      window.open(resolveFileUrl(c.file_url), "_blank", "noopener,noreferrer");
+                    } catch {
+                      /* cancelled */
+                    }
+                  }}
+                  className="inline-flex items-center justify-center rounded-md p-1 hover:bg-secondary"
+                  title={c.title}
+                >
+                  {(() => {
+                    const meta = getFileIconMeta(c.file_url, c.type);
+                    return <img src={meta.src} alt={meta.alt} className="h-4 w-4 object-contain" />;
+                  })()}
+                </button>
+              ))}
+            </div>
           </div>
         )}
       </div>
