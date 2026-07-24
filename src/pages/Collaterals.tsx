@@ -10,6 +10,7 @@ const typeFilters = [
   { key: "video", label: "Video" },
   { key: "deck", label: "Deck" },
   { key: "document", label: "Document" },
+  { key: "landing_page", label: "Landing Page" },
 ] as const;
 
 type TypeKey = (typeof typeFilters)[number]["key"];
