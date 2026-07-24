@@ -1,6 +1,7 @@
 import { Layout } from "@/components/Layout";
 import { useCollaterals, useSolutions } from "@/hooks/useContent";
-import { ArrowRight, Sparkles, Search, FileText, Layers, Play, ShieldCheck, Globe2, Boxes } from "lucide-react";
+import { ArrowRight, Search, FileText, Layers, Play, ShieldCheck, Globe2, Boxes } from "lucide-react";
+import { SolutionCard } from "@/components/SolutionCard";
 import { Link, useNavigate } from "react-router-dom";
 import { useMemo, useState } from "react";
 import { logActivity } from "@/lib/tracking";
@@ -16,7 +17,7 @@ const Index = () => {
   const navigate = useNavigate();
   const [q, setQ] = useState("");
 
-  const featured = useMemo(() => solutions.slice(0, 8), [solutions]);
+  const featured = useMemo(() => solutions.slice(0, 12), [solutions]);
   const latestItems = useMemo(() => {
     const items = [
       ...solutions.map((s) => ({
@@ -91,7 +92,7 @@ const Index = () => {
         <div className="mb-6 flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
           <div>
             <p className="text-xs font-semibold uppercase tracking-wider text-primary">Portfolio</p>
-            <h2 className="mt-1 font-display text-3xl font-bold">Featured Solutions</h2>
+            <h2 className="mt-1 font-display text-3xl font-bold">PTM Featured Solutions</h2>
           </div>
           <div className="flex items-center gap-4">
             <form onSubmit={onSearch}>
@@ -124,72 +125,9 @@ const Index = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {featured.map((s, i) => {
-              const relevant = collaterals.filter((c) => c.linked_solution_id === s.id);
-              return (
-                <div
-                  key={s.id}
-                  className="hover-lift group flex flex-col overflow-hidden rounded-lg border border-border bg-card shadow-soft"
-                >
-                  <button
-                    onClick={() => window.open(s.target_url, "_blank", "noopener,noreferrer")}
-                    className="relative aspect-[16/10] overflow-hidden bg-muted"
-                  >
-                    {s.thumbnail_url ? (
-                      <img
-                        src={resolveFileUrl(s.thumbnail_url)}
-                        alt={s.title}
-                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
-                    ) : (
-                      <div className="flex h-full w-full items-center justify-center bg-gradient-internal">
-                        <Sparkles className="h-8 w-8 text-primary-foreground/80" />
-                      </div>
-                    )}
-                    {i === 0 && (
-                      <span className="absolute left-3 top-3 rounded-md bg-primary px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-primary-foreground shadow-glow">
-                        Featured
-                      </span>
-                    )}
-                  </button>
-
-                  <div className="flex flex-1 flex-col gap-2 p-5">
-                    <div className="flex items-start justify-between gap-2">
-                      <h3 className="font-sans text-sm font-semibold leading-tight">{s.title}</h3>
-                      <span className="shrink-0 rounded-full bg-secondary px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
-                        {s.solution_type}
-                      </span>
-                    </div>
-                    {s.description && (
-                      <p className="line-clamp-2 text-xs text-muted-foreground">{s.description}</p>
-                    )}
-
-                    {relevant.length > 0 && (
-                      <div className="mt-auto border-t border-border pt-3">
-                        <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                          Relevant collaterals
-                        </p>
-                        <div className="flex flex-wrap gap-3">
-                          {relevant.map((c) => {
-                            const meta = getFileIconMeta(c.file_url, c.type);
-                            return (
-                              <button
-                                key={c.id}
-                                onClick={() => openCollateral(c.file_url, c.id)}
-                                className="inline-flex items-center justify-center rounded-md p-1 hover:bg-secondary"
-                                title={c.title}
-                              >
-                                <img src={meta.src} alt={meta.alt} className="h-4 w-4 object-contain" />
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
+            {featured.map((s, i) => (
+              <SolutionCard key={s.id} solution={s} featured={i === 0} />
+            ))}
           </div>
         )}
       </section>

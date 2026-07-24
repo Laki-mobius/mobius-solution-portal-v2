@@ -10,11 +10,18 @@ import { toast } from "sonner";
 
 type Creds = { username: string | null; password: string | null; note: string | null };
 
-export const SolutionCard = ({ solution }: { solution: Solution }) => {
+export const SolutionCard = ({
+  solution,
+  featured = false,
+}: {
+  solution: Solution;
+  featured?: boolean;
+}) => {
   
   const [creds, setCreds] = useState<Creds | null>(null);
   const [loadingCreds, setLoadingCreds] = useState(false);
   const [copied, setCopied] = useState<string | null>(null);
+  const [expanded, setExpanded] = useState(false);
   const hideTimer = useRef<number | null>(null);
 
   const { data: collaterals = [] } = useCollaterals();
@@ -116,6 +123,11 @@ export const SolutionCard = ({ solution }: { solution: Solution }) => {
               New
             </span>
           )}
+          {featured && (
+            <span className="inline-flex items-center rounded-full bg-primary px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-primary-foreground shadow-glow">
+              Featured
+            </span>
+          )}
         </div>
         {!isUpcoming && (
           <div className="absolute right-3 top-3 rounded-full bg-foreground/90 p-2 text-background opacity-0 transition-opacity group-hover:opacity-100">
@@ -139,7 +151,19 @@ export const SolutionCard = ({ solution }: { solution: Solution }) => {
           </h3>
         </div>
         {solution.description && (
-          <p className="line-clamp-3 text-xs text-muted-foreground">{solution.description}</p>
+          <div className="text-xs text-muted-foreground">
+            <p className={expanded ? "" : "line-clamp-3"}>{solution.description}</p>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setExpanded((v) => !v);
+              }}
+              className="mt-1 font-semibold text-primary hover:underline"
+            >
+              {expanded ? "Show less" : "Show more"}
+            </button>
+          </div>
         )}
 
         {isUpcoming && solution.upcoming_eta && (
